@@ -13,8 +13,8 @@ async def main(page: ft.Page):
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.padding = 20
 
-    title_text = ft.Text("SaveIt Telegram Bot", size=24, weight=ft.FontWeight.BOLD, color=ft.colors.BLUE_200)
-    subtitle_text = ft.Text("Self-Hosted Media Saver", size=12, color=ft.colors.GREY_400)
+    title_text = ft.Text("SaveIt Telegram Bot", size=24, weight=ft.FontWeight.BOLD, color=ft.Colors.BLUE_200)
+    subtitle_text = ft.Text("Self-Hosted Media Saver", size=12, color=ft.Colors.GREY_400)
 
     api_id_input = ft.TextField(label="API ID", hint_text="Example: 123456", width=300, text_size=14)
     api_hash_input = ft.TextField(label="API Hash", hint_text="Example: a1b2c3d4...", width=300, text_size=14, password=True, can_reveal_password=True)
@@ -26,19 +26,19 @@ async def main(page: ft.Page):
     logs_column = ft.Column(scroll=ft.ScrollMode.AUTO, expand=True)
     logs_container = ft.Container(
         content=logs_column,
-        border=ft.border.all(1, ft.colors.OUTLINE),
+        border=ft.border.all(1, ft.Colors.OUTLINE),
         border_radius=10,
         padding=10,
         width=400,
         height=300,
-        bgcolor=ft.colors.SURFACE_VARIANT,
+        bgcolor=ft.Colors.SURFACE_VARIANT,
         visible=False
     )
 
     action_button = ft.ElevatedButton(text="Connect & Start", width=300, height=45)
-    logout_button = ft.IconButton(icon=ft.icons.LOGOUT, visible=False, tooltip="Logout/Reset")
+    logout_button = ft.IconButton(icon=ft.Icons.LOGOUT, visible=False, tooltip="Logout/Reset")
 
-    def log(message, color=ft.colors.WHITE):
+    def log(message, color=ft.Colors.WHITE):
         logs_column.controls.append(ft.Text(f"• {message}", color=color, size=12, font_family="Consolas"))
         page.update()
         logs_column.scroll_to(offset=-1, duration=300)
@@ -147,13 +147,13 @@ async def main(page: ft.Page):
         logout_button.visible = True
         title_text.value = f"Welcome, {me.first_name}!"
         subtitle_text.value = "Bot Active. Reply '.saveit'"
-        subtitle_text.color = ft.colors.GREEN
+        subtitle_text.color = ft.Colors.GREEN
         client.add_event_handler(save_media_handler, events.NewMessage(pattern=r'\.saveit'))
         page.update()
 
     async def logout_click(e):
         if client: await client.disconnect()
-        page.window.close()
+        page.window.destroy()
 
     action_button.on_click = start_bot_process
     logout_button.on_click = logout_click
@@ -161,11 +161,11 @@ async def main(page: ft.Page):
     page.add(
         ft.Column(
             [ft.Row([title_text, logout_button], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
-             subtitle_text, ft.Divider(height=20, color=ft.colors.TRANSPARENT),
+             subtitle_text, ft.Divider(height=20, color=ft.Colors.TRANSPARENT),
              api_id_input, api_hash_input, phone_input, code_input, password_input,
-             ft.Divider(height=20, color=ft.colors.TRANSPARENT), action_button, logs_container],
+             ft.Divider(height=20, color=ft.Colors.TRANSPARENT), action_button, logs_container],
             horizontal_alignment=ft.CrossAxisAlignment.CENTER
         )
     )
 
-ft.app(target=main)
+ft.run(main)
