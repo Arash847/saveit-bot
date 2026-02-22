@@ -2,14 +2,7 @@
 flet==0.80.5
 
 # ── Telethon (Telegram client) ───────────────────────────────
+# Its deps (pyaes, rsa, pyasn1) are installed from source via
+# --source-packages flag in the GitHub Actions workflow.
 telethon>=1.36.0,<2.0
 
-# ── Telethon's pure-Python crypto dependencies ───────────────
-# These are required because `cryptg` (a C extension) cannot
-# be compiled for Android. Telethon falls back to these.
-pyaes>=1.6.1
-rsa>=4.9
-
-# ── NOTE ─────────────────────────────────────────────────────
-# Do NOT add `cryptg` here — it is a native C extension with
-# no pre-built Android wheels and will cause the build to fail.
