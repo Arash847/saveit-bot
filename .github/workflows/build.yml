@@ -9,56 +9,52 @@ on:
 
 env:
   PYTHON_VERSION: "3.11"
-  FLUTTER_VERSION: "3.27.4"
   JAVA_VERSION: "17"
 
 jobs:
   build-apk:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 45
 
     steps:
+      # ── 1. Checkout repository ──────────────────────────────────
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # ── 2. Setup Java (JDK 17 required by Android/Gradle) ──────
       - name: Setup Java JDK
         uses: actions/setup-java@v4
         with:
           distribution: "temurin"
           java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          channel: stable
-          cache: true
-
-      - name: Accept Android licenses
-        run: yes | flutter doctor --android-licenses || true
-
-      - name: Flutter doctor
-        run: flutter doctor -v
-
+      # ── 3. Setup Python ────────────────────────────────────────
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
           cache: "pip"
 
+      # ── 4. Install Flet CLI ────────────────────────────────────
       - name: Install Flet CLI
         run: |
           pip install --upgrade pip
           pip install flet==0.80.5
 
+      # ── 5. Build APK (non-interactive, verbose) ────────────────
+      #   --yes                  → auto-confirm all prompts (Flutter/SDK downloads)
+      #   --no-rich-output       → clean CI logs, no spinners/progress bars
+      #   --source-packages      → install these pure-Python packages from sdist
+      #                            (they have NO pre-built Android wheels)
       - name: Build APK
         run: |
           flet build apk \
             --yes \
             --no-rich-output \
             --verbose \
-            --skip-flutter-doctor
+            --source-packages pyaes,rsa,pyasn1
 
+      # ── 6. Upload APK artifact ─────────────────────────────────
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
