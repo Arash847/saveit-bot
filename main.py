@@ -9,9 +9,6 @@ phone_number = ""
 async def main(page: ft.Page):
     page.title = "SaveIt Bot - Downloader"
     page.theme_mode = ft.ThemeMode.DARK
-    page.window_width = 450
-    page.window_height = 700
-    page.window_resizable = False
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.padding = 20
@@ -107,7 +104,10 @@ async def main(page: ft.Page):
             except Exception as ex:
                 action_button.disabled = False
                 action_button.text = "Connect & Start"
-                page.show_snack_bar(ft.SnackBar(ft.Text(f"Error: {ex}"), bgcolor=ft.colors.RED))
+                snack = ft.SnackBar(ft.Text(f"Error: {ex}"), bgcolor=ft.Colors.RED)
+                page.overlay.append(snack)
+                snack.open = True
+                page.update()
 
         elif action_button.text == "Verify Code":
             if not code_input.value: return
@@ -153,7 +153,7 @@ async def main(page: ft.Page):
 
     async def logout_click(e):
         if client: await client.disconnect()
-        page.window_close()
+        page.window.close()
 
     action_button.on_click = start_bot_process
     logout_button.on_click = logout_click
